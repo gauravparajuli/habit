@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 
-import { signupUser } from '../controllers/auth'
+import { signupUser, loginUser } from '../controllers/auth'
 import User from '../models/user'
 
 const router = Router()
@@ -13,7 +13,7 @@ router.post(
             .isEmail()
             .normalizeEmail({ gmail_remove_dots: false })
             .withMessage('Enter a valid email.'),
-        body('email').custom((value, { req }) => {
+        body('email').custom((value) => {
             return User.findOne({ email: value }).then((user) => {
                 if (user) {
                     return Promise.reject('Email already registered.')
@@ -30,6 +30,21 @@ router.post(
             .withMessage('Name should be atleast 3 characters long.'),
     ],
     signupUser
+)
+
+router.post(
+    '/login',
+    [
+        body('email')
+            .isEmail()
+            .normalizeEmail({ gmail_remove_dots: false })
+            .withMessage('Enter a valid email.'),
+        body('password')
+            .trim()
+            .isLength({ min: 8 })
+            .withMessage('Password should be atleast 8 characters long'),
+    ],
+    loginUser
 )
 
 export default router
