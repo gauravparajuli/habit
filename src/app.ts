@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
 import helmet from 'helmet'
 import mongoose from 'mongoose'
@@ -13,6 +13,16 @@ app.use(helmet())
 
 // register routes here
 app.use('/auth', authRoutes)
+
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+    // @ts-ignore
+    const status = error.statusCode || 500
+    // @ts-ignore
+    const message = error.message
+    // @ts-ignore
+    const data = error.data
+    res.status(status).json({ message, data })
+})
 
 mongoose
     .connect(
