@@ -16,16 +16,16 @@ export const signupUser = async (
     const email = req.body.email
     const password = req.body.password
 
-    if (!errors.isEmpty()) {
-        const error = new Error('Input validation failed.')
-        // @ts-ignore
-        error.statusCode = 422
-        // @ts-ignore
-        error.data = errors.array()
-        throw error
-    }
-
     try {
+        if (!errors.isEmpty()) {
+            const error = new Error('Input validation failed.')
+            // @ts-ignore
+            error.statusCode = 422
+            // @ts-ignore
+            error.data = errors.array()
+            throw error
+        }
+
         const hashedPw = await bcrypt.hash(
             password,
             process.env.BCRYPT_SALT as string
@@ -61,9 +61,8 @@ export const loginUser = async (
         error.data = errors.array()
         throw error
     }
-    
-    try {
 
+    try {
         const user = await User.findOne({ email })
         if (!user) {
             res.status(401).json({ message: 'Invalid username or password.' })

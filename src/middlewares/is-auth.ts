@@ -24,5 +24,11 @@ export default function (req: Request, res: Response, next: NextFunction) {
         }
         // @ts-ignore
         req.userId = decodedToken.userId
-    } catch (err) {}
+        next()
+    } catch (err: any) {
+        if (!err.statusCode) {
+            err.statusCode = 500
+        }
+        next(err)
+    }
 }

@@ -33,7 +33,7 @@ router.post(
 )
 
 router.post(
-    '/login',
+    '/',
     [
         body('email')
             .isEmail()
