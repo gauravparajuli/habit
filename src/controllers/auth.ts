@@ -15,16 +15,17 @@ export const signupUser = async (
     const name = req.body.name
     const email = req.body.email
     const password = req.body.password
-    try {
-        if (!errors.isEmpty()) {
-            const error = new Error('Input validation failed.')
-            // @ts-ignore
-            error.statusCode = 422
-            // @ts-ignore
-            error.data = errors.array()
-            throw error
-        }
 
+    if (!errors.isEmpty()) {
+        const error = new Error('Input validation failed.')
+        // @ts-ignore
+        error.statusCode = 422
+        // @ts-ignore
+        error.data = errors.array()
+        throw error
+    }
+
+    try {
         const hashedPw = await bcrypt.hash(
             password,
             process.env.BCRYPT_SALT as string
@@ -51,15 +52,17 @@ export const loginUser = async (
 
     const email = req.body.email
     const password = req.body.password
+
+    if (!errors.isEmpty()) {
+        const error = new Error('Input validation failed.')
+        // @ts-ignore
+        error.statusCode = 422
+        // @ts-ignore
+        error.data = errors.array()
+        throw error
+    }
+    
     try {
-        if (!errors.isEmpty()) {
-            const error = new Error('Input validation failed.')
-            // @ts-ignore
-            error.statusCode = 422
-            // @ts-ignore
-            error.data = errors.array()
-            throw error
-        }
 
         const user = await User.findOne({ email })
         if (!user) {
